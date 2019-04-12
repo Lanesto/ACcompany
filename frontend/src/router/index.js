@@ -3,10 +3,11 @@ import Vue from 'vue'
 import Router from 'vue-router'
 // components
 import Home from '@/components/Home'
-import CompanyHome from '@/components/CompanyHome'
-import CircleHome from '@/components/Circlehome'
-import WidgetHome from '@/components/WidgetHome'
+import About from '@/components/About'
 import NotFound from '@/components/NotFound'
+import CompanyIndex from '@/components/company/CompanyIndex.vue'
+import CircleIndex from '@/components/circle/CircleIndex.vue'
+import WidgetIndex from '@/components/widget/WidgetIndex.vue'
 
 Vue.use(Router)
 
@@ -15,27 +16,32 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: Home
     },
     {
+      path: '/about',
+      name: 'about',
+      component: About
+    },
+    {
       path: '/company',
-      name: 'CompanyHome',
-      component: CompanyHome
+      name: 'company',
+      component: CompanyIndex
     },
     {
       path: '/circle',
-      name: 'CircleHome',
-      component: CircleHome
+      name: 'circle',
+      component: CircleIndex
     },
     {
       path: '/widget',
-      name: 'WidgetHome',
-      component: WidgetHome
+      name: 'widget',
+      component: WidgetIndex
     },
     { // 404
       path: '*',
-      name: 'NotFound',
+      name: 'not-found',
       component: NotFound
     }
   ]

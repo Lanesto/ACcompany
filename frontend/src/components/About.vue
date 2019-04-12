@@ -1,5 +1,7 @@
 <template>
-  <h1>CircleHome</h1>
+  <div>
+    <h1>About ACC</h1>
+  </div>
 </template>
 
 <script>
