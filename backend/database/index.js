@@ -1,19 +1,28 @@
-var mysql  = require('mysql')
-var config = require('./config')
+const mysql  = require('mysql')
+const config = require('./config')
 
-// TODO:
-// using connection pool, implement functions for query execution
-// + prevent sql injection
-
-
-module.exports.connectionTest = function () { // node.js 
-    var conn = mysql.createConnection(config.dev)
-    conn.connect()
-    conn.query('SELECT * FROM Test', function (err, rows, fields) {
-        if (err) 
-            console.log(`MySQL connectin failed: ${err}`)
-        else 
-            console.log(`MySQL connection successful: loaded ${rows.length} rows`)
+module.exports.Database = class {
+  constructor() {
+    this.connection = mysql.createConnection(config.dev)
+  }
+  execute(query, params) {
+    return new Promise((resolve, reject) => {
+      this.connection.query(query, params, (err, results, fields) => {
+        if (err) {
+          return reject(err)
+        }
+        resolve(results, fields)
+      })
     })
-    conn.end()
+  }
+  close() {
+    return new Promise((resolve, reject) => {
+      this.connection.end(err => {
+        if (err) {
+          return reject(err)
+        }
+        resolve()
+      })
+    })
+  }
 }
