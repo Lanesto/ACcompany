@@ -1,8 +1,29 @@
-var express = require('express')
-var router = express.Router()
+const express  = require('express')
+const router   = express.Router()
+const database = require('@database')
 
+/*
+  GET api/company
+  returns company, its departments and other informations
+*/
 router.get('/', function(req, res, next) {
-  res.send(__dirname + '\ncompany' + JSON.stringify(req.query))
+  let db = new database.Database()
+  let exCompanyInfo
+  db.execute(`SELECT name, logo FROM company LIMIT 1`, [])
+  .then(results => {
+    exCompanyInfo = results[0]
+    return db.execute(`SELECT id, parentID, name FROM department ORDER BY name ASC`, [])
+  }).then(results => {
+    res.status(200).json({
+      ...exCompanyInfo,
+      depts: results
+    })
+  }).catch(err => {
+    res.status(500).send({ message: 'Server or database error, contact admin for help' })
+  }).finally(() => {
+    db.close()
+  })
+  delete db
 })
 
 module.exports = router

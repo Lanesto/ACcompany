@@ -6,4 +6,7 @@ router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' })
 })
 
+router.use('/api', require('./api/index'))
+router.use('/auth', require('./auth/index'))
+
 module.exports = router

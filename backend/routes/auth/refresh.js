@@ -1,19 +1,19 @@
 const express  = require('express')
 const router   = express.Router()
-const database = require('../../database/index')
-const auth     = require('../../auth/index')
+const database = require('@database')
+const auth     = require('@auth')
 
 /*
+  POST auth/refresh
   header {
     'Authorization': `Bearer ${refreshToken}`
   }
   body {
     accessToken
   }
-  
   if   valid(accessToken)
   then send it back
-  else if   valid(refreshToken) and db.user(id).refresh_token = refreshToken
+  else if   valid(refreshToken) and db.user(id).refresh_token == refreshToken
        then create and send new access token
        else invalid token given
 */
@@ -28,25 +28,33 @@ router.post('/', function(req, res, next) {
   }).catch(err => {
     if (err.name === 'TokenExpiredError') {
       // token is valid but expired -> create and send new
-      let exId
+      let exID
       auth.verifyRefreshToken(refreshToken)
         .then(decoded => {
-          exId = decoded.id
-          return db.execute('SELECT COUNT(id) FROM user WHERE id = ? AND refresh_token = ?', [exId, refreshToken])
+          exID = decoded.id
+          return db.execute(`
+          SELECT COUNT(id) AS n 
+          FROM user 
+          WHERE account = ? AND refreshToken = ?`, 
+          [exID, refreshToken])
         }).then(results => {
-          if (results.length == 1)
+          if (results[0].n === 1)
             res.status(200).json({
-              accessToken: auth.createAccessToken({
-                exId
-              })
+              accessToken: auth.createAccessToken({ id: exID })
             })
         }).catch(err => {
-          res.sendStatus(401)
-          console.log(err)
-          // next(err)
+          if (err.name === 'TokenExpiredError') {
+            res.status(401).send({ message: 'Tokens are all expired, please login' })
+          }
+          else {
+            res.status(500).send({ message: 'Invalid request, is suspected to be malformed' })
+          }
         }).finally(() => {
           db.close()
         })
+      }
+      else {
+        res.status(400).send({ message: 'Received invalid token, broken or malformed' })
       }
     })
   delete db

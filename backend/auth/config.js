@@ -18,6 +18,7 @@ module.exports = {
   },
   crypto: {
     iteration: 10983,
-    digest: 'sha256'
+    digest: 'sha256',
+    keylen: 64
   }
 }
