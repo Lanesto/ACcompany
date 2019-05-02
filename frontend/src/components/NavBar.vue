@@ -7,12 +7,13 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
-        <b-nav-item href="#">Link 2</b-nav-item>
-        <b-nav-item-dropdown text="Browse">
+        <b-nav-item :to="{ name: 'introduce' }">사원 소개</b-nav-item>
+        <b-nav-item :to="{ name: 'notice' }">공지 사항</b-nav-item>
+        <b-nav-item :to="{ name: 'vacation' }">휴가 체계</b-nav-item>
+        <b-nav-item-dropdown text="게시판">
           <b-dropdown-item :to="{ name: 'company' }">Company</b-dropdown-item>
           <b-dropdown-item :to="{ name: 'circle' }">Circle</b-dropdown-item>
-          <b-dropdown-item :to="{ name: 'widget' }">Widget</b-dropdown-item>
+          <b-dropdown-item :to="{ name: 'widget' }">Widget Test</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
       <!-- right aligned -->

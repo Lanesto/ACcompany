@@ -33,7 +33,7 @@ router.post('/', function(req, res, next) {
       throw new error.CustomError('InvalidUserError', 'User informations are broken, or malformed')
 
     exTokens = {
-      accessToken: auth.createAccessToken({ id }),
+      accessToken: auth.createAccessToken({ id, privilege: null }),
       refreshToken: auth.createRefreshToken({ id })
     }
     return db.execute(`

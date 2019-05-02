@@ -16,8 +16,8 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faSearch)
 
-// mount
-Vue.prototype.$ajax = axios
+Vue.prototype.$axios = axios
+
 Vue.component('fa-icon', FontAwesomeIcon)
 Vue.use(BootstrapVue)
 

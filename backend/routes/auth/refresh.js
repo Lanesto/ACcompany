@@ -40,7 +40,7 @@ router.post('/', function(req, res, next) {
         }).then(results => {
           if (results[0].n === 1)
             res.status(200).json({
-              accessToken: auth.createAccessToken({ id: exID })
+              accessToken: auth.createAccessToken({ id: exID, privilege: null })
             })
         }).catch(err => {
           if (err.name === 'TokenExpiredError') {
@@ -49,13 +49,13 @@ router.post('/', function(req, res, next) {
           else {
             res.status(500).send({ message: 'Invalid request, is suspected to be malformed' })
           }
-        }).finally(() => {
-          db.close()
         })
       }
       else {
         res.status(400).send({ message: 'Received invalid token, broken or malformed' })
       }
+    }).finally(() => {
+      db.close()
     })
   delete db
 })
