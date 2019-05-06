@@ -1,7 +1,6 @@
-const express  = require('express')
-const router   = express.Router()
-const database = require('@database')
-const logger   = require('@logger')
+const express = require('express')
+const router  = express.Router()
+const { Database } = require('@database')
 
 /*
   GET api/board/<board_id>
@@ -24,7 +23,7 @@ router.get('/:board/', function(req, res, next) {
   if      (len <  0) len = 0
   else if (len > 99) len = 99
   // main
-  let db = new database.Database()
+  let db = new Database()
   db.execute(`
   SELECT p.id, p.title, p.date_created, u.account
   FROM post AS p
@@ -35,12 +34,11 @@ router.get('/:board/', function(req, res, next) {
   [board, start, start + len])
   .then(results => {
     res.status(200).json(results)
-  }).catch(err => {
-    res.status(400).send({ message: 'Given request has error, invalid board or inappropriate range of count' })
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .catch(err => {
+    res.status(400).send({ message: 'Given request has error, invalid board or inappropriate range of count' })
+  })
+  .finally(() => db.close())
 })
 
 module.exports = router

@@ -1,6 +1,6 @@
-const express  = require('express')
-const router   = express.Router()
-const database = require('@database')
+const express = require('express')
+const router  = express.Router()
+const { Database } = require('@database')
 
 /*
   GET api/circle
@@ -18,7 +18,7 @@ router.get('/', function(req, res, next) {
   if      (len <  0) len = 0
   else if (len > 99) len = 99
   // main
-  let db = new database.Database()
+  let db = new Database()
   db.execute(`
   SELECT id, name, date_created
   FROM circle
@@ -26,12 +26,11 @@ router.get('/', function(req, res, next) {
   [start, start + len])
   .then(results => {
     res.status(200).json(results)
-  }).catch(err => {
-    res.status(400).send({ message: 'Unknown errors, might be having problems on database server' })
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .catch(err => {
+    res.status(400).send({ message: 'Unknown errors, might be having problems on database server' })
+  })
+  .finally(() => db.close())
 })
 
 /*
@@ -46,8 +45,8 @@ router.get('/:circle/', function(req, res, next) {
   // preprocess
   circle = parseInt(circle) || null
   // main
-  let db = new database.Database()
-  let exBoards = []
+  let db = new Database()
+  let exBoards
   db.execute(`
   SELECT b.id, b.name, b.date_created
   FROM board  AS b
@@ -66,12 +65,11 @@ router.get('/:circle/', function(req, res, next) {
       ...results[0],
       boards: exBoards
     })
-  }).catch(err => {
-    res.status(400).send({ message: 'Given request has error, pointing unavailable circle' })
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .catch(err => {
+    res.status(400).send({ message: 'Given request has error, pointing unavailable circle' })
+  })
+  .finally(() => db.close())
 })
 
 module.exports = router

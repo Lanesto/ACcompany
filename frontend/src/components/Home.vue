@@ -6,6 +6,9 @@
         <input style="display: block; margin: 3px;" type="text" placeholder="Account" v-model="id"/>
         <input style="display: block; margin: 3px;" type="password" placeholder="Password" v-model="password"/>
         <button style="margin: 7px; background-color: #666; color: white;" type="submit" @click.prevent="tryLogin" @keyup.enter="tryLogin">Submit</button>
+        <a href="auth/login/naver">Naver</a>
+        <a href="auth/login/kakao">Kakao</a>
+        <p>Cookie: {{ message }}</p>
       </form>
       <h3>Results:</h3>
       <div v-for="(v, k) in resObj" :key="k">
@@ -40,7 +43,8 @@ export default {
   data () {
     return {
       id: null,
-      password: null
+      password: null,
+      message: ''
     }
   },
   methods: {
@@ -56,6 +60,9 @@ export default {
     resObj() {
       return this.$store.state.user
     }
+  },
+  created() {
+    this.message = this.$cookies.get('token')
   }
 }
 </script>

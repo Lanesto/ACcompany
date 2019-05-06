@@ -1,13 +1,13 @@
-const express  = require('express')
-const router   = express.Router()
-const database = require('@database')
+const express = require('express')
+const router  = express.Router()
+const { Database } = require('@database')
 
 /*
   GET api/company
   returns company, its departments and other informations
 */
 router.get('/', function(req, res, next) {
-  let db = new database.Database()
+  let db = new Database()
   let exCompanyInfo
   db.execute(`SELECT name, logo FROM company LIMIT 1`, [])
   .then(results => {
@@ -18,12 +18,11 @@ router.get('/', function(req, res, next) {
       ...exCompanyInfo,
       depts: results
     })
-  }).catch(err => {
-    res.status(500).send({ message: 'Server or database error, contact admin for help' })
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .catch(err => {
+    res.status(500).send({ message: 'Server or database error, contact admin for help' })
+  })
+  .finally(() => db.close())
 })
 
 module.exports = router

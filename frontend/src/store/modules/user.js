@@ -24,7 +24,7 @@ const actions = {
   login(context, loginData) {
     let { id, password } = loginData
     let result = {}
-    axios.post('auth/login', { id, password })
+    axios.post('auth/login/local', { id, password })
     .then(res => {
       result = { 
         account: id,

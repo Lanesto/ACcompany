@@ -1,8 +1,8 @@
-const express  = require('express')
-const router   = express.Router()
-const database = require('@database')
-const auth     = require('@auth')
-const error    = require('@src/error')
+const express = require('express')
+const router  = express.Router()
+const { Database } = require('@database')
+const { ensureAuthForResource } = require('@oauth2_0')
+const { CustomError }    = require('@src/error')
 
 /*
   GET api/post/<post_id>
@@ -16,7 +16,7 @@ router.get('/:post', function(req, res, next) {
   // preprocess
   post = parseInt(post) || null
   // main
-  let db = new database.Database()
+  let db = new Database()
   db.execute(`
   SELECT p.id, p.title, p.content, p.date_created, u.account
   FROM post AS p
@@ -25,19 +25,15 @@ router.get('/:post', function(req, res, next) {
   [post])
   .then(results => {
     res.status(200).json(results[0])
-  }).catch(err => {
-    res.status(400).send({ message: 'Given request has error, possibly designating post does not exist' })
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .catch(err => {
+    res.status(400).send({ message: 'Given request has error, possibly designating post does not exist' })
+  })
+  .finally(() => db.close())
 })
 
 /*
   POST api/post
-  header {
-    'Authorization': `Bearer ${accessToken}`
-  }
   body {
     board
     title
@@ -45,27 +41,25 @@ router.get('/:post', function(req, res, next) {
   }
   Create a new post
 */
-router.post('/', function(req, res, next) {
-  let accessToken = req.get('Authorization').split(' ')[1]
+router.post('/', ensureAuthForResource, function(req, res, next) {
   let { board, title, content } = req.body
   // preprocess
   board = (board === 'null') ? null : parseInt(board)
   // main
-  let db = new database.Database()
-  auth.verifyAccessToken(accessToken)
-  .then(decoded => {
-    return db.execute(`
-    INSERT INTO post(boardID, userID, title, content) 
-    VALUES(?, (SELECT id FROM user WHERE account = ?), ?, ?)`, 
-    [board, decoded.id, title, content])
-  }).then(results => {
+  let db = new Database()
+  db.execute(`
+  INSERT INTO post(boardID, userID, title, content) 
+  VALUES(?, ?, ?, ?)`, 
+  [board, req.user.id, title, content])
+  .then(results => {
     if (results.affectedRows === 1)
       res.status(201).send({
         message: 'Created new post successfully', 
         postID: results.insertId
       })
-    else throw new error.CustomError('DatabaseError', "Couldn't create a post, may originated from data domain")
-  }).catch(err => {
+    else throw new CustomError('DatabaseError', "Couldn't create a post, may originated from data domain")
+  })
+  .catch(err => {
     if (err.name === 'TokenExpiredError') {
       res.status(401).send({ message: 'Authorization failed, login please' })
     }
@@ -73,12 +67,11 @@ router.post('/', function(req, res, next) {
       res.status(500).send({ message: err.message })
     } 
     else {
+      console.log(err)
       res.status(400).send({ message: 'Given request might has some errors' })
     }
-  }).finally(() => {
-    db.close()
   })
-  delete db
+  .finally(() => db.close())
 })
 
 /*
@@ -91,24 +84,20 @@ router.post('/', function(req, res, next) {
   }
 */
 router.delete('/:post', function(req, res, next) {
-  let accessToken = req.get('Authorization').split(' ')[1]
   let { post } = req.params
   // preprocess
   post = parseInt(post) || null
   // main
-  let db = new database.Database()
-  auth.verifyAccessToken(accessToken)
-  .then(decoded => {
-    return db.execute(`
-    DELETE FROM post
-    WHERE id = ? AND (SELECT userID FROM user WHERE account = ?)`, [post, decoded.id])
-  }).then(results => {
+  let db = new Database()
+  db.execute(`DELETE FROM post WHERE id = ? AND userID = ?`, [post, req.user.id])
+  .then(results => {
     if (results.affectedRows === 1) {
       res.status(200).send({
         message: 'Deleted a post successfully', 
       })
-    } else throw new error.CustomError('ResourceDoesNotExist', 'Post does not exists')
-  }).catch(err => {
+    } else throw new CustomError('ResourceDoesNotExist', 'Post does not exists or is not yours')
+  })
+  .catch(err => {
     if (err.name === 'TokenExpiredError') {
       res.status(401).send({ message: 'Please login to delete your post' })
     }
@@ -118,10 +107,7 @@ router.delete('/:post', function(req, res, next) {
     else {
       res.status(520).send({ message: 'Unknown error occurred'})
     }
-  }).finally(() => {
-    db.close()
-  })
-  delete db
+  }).finally(() => db.close())
 })
 
 module.exports = router

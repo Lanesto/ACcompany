@@ -1,6 +1,7 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
+import VueCookies from 'vue-cookies'
 import App from './app'
 // Vue supports
 import store from './store/index'
@@ -16,10 +17,11 @@ import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 library.add(faSearch)
 
+Vue.use(VueCookies)
 Vue.prototype.$axios = axios
 
-Vue.component('fa-icon', FontAwesomeIcon)
 Vue.use(BootstrapVue)
+Vue.component('fa-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false
 
