@@ -1,14 +1,10 @@
 <template>
-  <h1>CompanyHome</h1>
+  <h1>&lt;Circle/Detail_Template&gt;</h1>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      // ...
-    }
-  }
+  
 }
 </script>
 

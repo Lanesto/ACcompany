@@ -11,8 +11,8 @@ const passport = require('passport')
   create and send token back
 */
 router.post('/', passport.authenticate('local', {
-  successRedirect: '/',
-  failureRedirect: '/'
+  failureRedirect: '/',
+  successRedirect: '/'
 }))
 
 module.exports = router

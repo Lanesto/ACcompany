@@ -41,8 +41,13 @@ const e_logger = createLogger({
 })
 
 // later hook other exceptions, such as unhandledRejection
-process.on('uncaughtException', err => {
-  e_logger.error(`Uncaught ${err.name}\r\n└ (Stacktrace) ${err.stack.replace(/\n/gi, '\r\n')}`)
-})
+process
+  .on('uncaughtException', err => {
+    e_logger.error(`Uncaught ${err.name}\r\n└ (Stacktrace) ${err.stack.replace(/\n/gi, '\r\n')}`)
+  })
+  .on('unhandledRejection', (reason, promise) => {
+    e_logger.error(`Unhandled Promise\r\n└(Reason) ${reason}\r\n└(Promise) ${promise}`)
+  })
+  
 
 module.exports = logger

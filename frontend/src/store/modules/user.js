@@ -1,19 +1,15 @@
 import axios from 'axios'
 
-const auth = axios.create({
-  headers: { 'Authorization': undefined }
-})
-
 const state = {
-  account     : null,
-//  email       : null,
-//  name        : null,
-//  gender      : null,
-//  age         : null,
-//  dept        : null,
-  accessToken : null,
-  refreshToken: null,
-  loggedIn    : false
+  // only fields aligned here will be used (redundant data will be received)
+  id      : null, // local login account or sns id (= sns_id   || account)
+  type    : null, // what kind of login type is    (= sns_type || 'local')
+  nickname: null,
+  email   : null,
+  name    : null,
+  gender  : null,
+  age     : null,
+  loggedIn: false
 }
 
 const getters = {
@@ -21,62 +17,44 @@ const getters = {
 }
 
 const actions = {
-  login(context, loginData) {
-    let { id, password } = loginData
-    let result = {}
-    axios.post('auth/login/local', { id, password })
-    .then(res => {
-      result = { 
-        account: id,
-        ...res.data
-      }
-      context.commit('login', result)
-    }).catch(err => {
-      alert(err.data.message)
-      // error handling
+  login(context, credential) {
+    // local login only!
+    return new Promise(function(resolve, reject) {
+      axios.post('/auth/login/local', credential)
+      .then(results => {
+        context.dispatch('load')
+        resolve(results)
+      })
+      .catch(err => {
+        reject(err)
+      })
     })
+  },
+  load(context) {
+    axios.get('/auth/profile')
+    .then(res => {
+      context.commit('set', res.data)
+    })
+    .catch(err => {})
   },
   logout(context) {
-    auth.post('auth/logout')
-    .then(res => {
-      context.commit('logout')
-    }).catch(err => {
-      alert(err.data.message)
-      // error handling
+    axios.get('/auth/logout')
+    .then(results => {
+      context.commit('flush')
+      this.$router.replace({ name: 'home' })
     })
-  },
-  refresh(context, tokens) {
-    let userContext = JSON.parse(localStorage.userContext) || null
-    axios.post('auth/refresh', 
-      { accessToken: userContext.accessToken }, 
-      { headers: { 'Authorization': `Bearer ${userContext.refreshToken}` }
-    }).then(res => {
-      // renew access token
-      userContext.accessToken = res.data.accessToken
-      context.commit('login', userContext)
-    }).catch(err => {
-      alert(err.data.message)
-      context.commit('logout')
-    })
+    .catch(err => {})
   }
 }
 
 const mutations = {
-  login(state, payload) {
-    Object.keys(state).map(key => {
-      state[key] = payload[key] || null
-    })
+  set(state, profile) {
+    Object.zip(state, profile)
     state.loggedIn = true
-    auth.defaults.headers['Authorization'] = `Bearer ${payload.accessToken}`
-    localStorage.userContext = JSON.stringify(state)
   },
-  logout(state) {
-    Object.keys(state).map(key => {
-      state[key] = null
-    })
+  flush(state) {
+    Object.nullify(state)
     state.loggedIn = false
-    auth.defaults.headers['Authorization'] = undefined
-    delete localStorage.userContext
   }
 }
 

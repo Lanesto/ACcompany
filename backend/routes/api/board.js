@@ -25,9 +25,9 @@ router.get('/:board/', function(req, res, next) {
   // main
   let db = new Database()
   db.execute(`
-  SELECT p.id, p.title, p.date_created, u.account
-  FROM post AS p
-  JOIN user AS u ON p.userID = u.id
+  SELECT p.id, p.title, p.date_created, u.id AS userID
+  FROM post p
+  JOIN user u ON p.userID = u.id
   WHERE p.boardID = ?
   ORDER BY p.date_created ASC
   LIMIT ?, ?`, 

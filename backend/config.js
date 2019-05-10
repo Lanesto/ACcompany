@@ -11,10 +11,10 @@ module.exports = {
     // default port is 3306
     heroku: { // just a form, app does not exists
       host              : 'us-cdbr-iron-east-02.cleardb.net',
-      user              : 'b864e716df57ec',
-      password          : '452690bd',
+      user              : 'bfcdc1ec575fe1',
+      password          : '66df6411',
       port              : 3306,
-      database          : 'heroku_ee75a534afb3245',
+      database          : 'heroku_f5e4e578663080e',
       multipleStatements: true
     },
     local: {

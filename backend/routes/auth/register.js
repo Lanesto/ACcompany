@@ -7,8 +7,9 @@ const { CustomError } = require('@src/error')
 /*
   POST auth/register
   body {
-    id
+    id (account)
     password
+    nickname
     email
     username
     gender
@@ -17,7 +18,7 @@ const { CustomError } = require('@src/error')
   local user registration
 */
 router.post('/', function(req, res, next) {
-  let { id, password, email, username, gender, age } = req.body
+  let { id, password, nickname, email, username, gender, age } = req.body
   // preprocess
   gender = (gender === 'M') ? 1
          : (gender === 'F') ? 0 : null
@@ -39,9 +40,9 @@ router.post('/', function(req, res, next) {
   })
   .then(digest => {
     return db.execute(`
-    INSERT INTO user(account, password, email, name, gender, age, salt)
-    VALUES(?, ?, ?, ?, ?, ?, ?)`, 
-    [id, digest, email, username, gender, age, exSalt])
+    INSERT INTO user(account, password, nickname, email, name, gender, age, salt)
+    VALUES(?, ?, ?, ?, ?, ?, ?, ?)`, 
+    [id, digest, nickname, email, username, gender, age, exSalt])
   })
   .then(results => {
     if (results.affectedRows === 1) {

@@ -5,5 +5,6 @@ const router  = express.Router()
 router.use('/local', require('./local'))
 router.use('/naver', require('./naver'))
 router.use('/kakao', require('./kakao'))
+router.use('/exit', require('./exit'))
 
 module.exports = router

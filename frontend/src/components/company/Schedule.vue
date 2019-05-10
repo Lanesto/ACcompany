@@ -1,14 +1,10 @@
 <template>
-  <h1>WidgetHome</h1>
+  <h1>&lt;Company/Schedule Template&gt;</h1>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-      // ...
-    }
-  }
+  
 }
 </script>
 

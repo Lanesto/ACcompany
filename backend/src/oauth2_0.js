@@ -47,10 +47,11 @@ function SNSLogin(info, done) {
   .then(results => {
     if (results[0].n === 0) { 
       // if sns not connected yet, then register first
+      // requires MySQL multipleStatements option to be true
       db.execute(`
-      INSERT INTO user() VALUES();
+      INSERT INTO user(nickname) VALUES(?);
       INSERT INTO oauth2_0(id, sns_id, sns_type) VALUES(last_insert_id(), ?, ?);`,
-      [info.id, info.authType, info.name])
+      [info.nickname, info.id, info.authType])
     }
     return db.execute(`SELECT id FROM oauth2_0 WHERE sns_type = ? AND sns_id = ?`,
     [info.authType, info.id])
@@ -95,7 +96,8 @@ module.exports.init = function() {
   }, function(accessToken, refreshToken, profile, done) {
     SNSLogin({
       authType: 'naver',
-      id: profile._json.id
+      id      : profile._json.id,
+      nickname: profile._json.nickname
     }, done)
   }))
 
@@ -103,10 +105,10 @@ module.exports.init = function() {
   passport.use('kakao', new (require('passport-kakao')).Strategy({
     ...config.kakao
   }, function(accessToken, refreshToken, profile, done) {
-    console.log(JSON.stringify(profile._json))
     SNSLogin({
       authType: 'kakao',
-      id: profile._json.id
+      id      : profile._json.id,
+      nickname: profile._json.properties.nickname
     }, done)
   }))
 }

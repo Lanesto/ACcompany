@@ -7,14 +7,10 @@
     <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
     <b-collapse id="nav-collapse" is-nav>
       <b-navbar-nav>
-        <b-nav-item :to="{ name: 'introduce' }">사원 소개</b-nav-item>
-        <b-nav-item :to="{ name: 'notice' }">공지 사항</b-nav-item>
-        <b-nav-item :to="{ name: 'vacation' }">휴가 체계</b-nav-item>
-        <b-nav-item-dropdown text="게시판">
-          <b-dropdown-item :to="{ name: 'company' }">Company</b-dropdown-item>
-          <b-dropdown-item :to="{ name: 'circle' }">Circle</b-dropdown-item>
-          <b-dropdown-item :to="{ name: 'widget' }">Widget Test</b-dropdown-item>
-        </b-nav-item-dropdown>
+        <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
+        <b-nav-item :to="{ name: 'company.home' }">Company</b-nav-item>
+        <b-nav-item :to="{ name: 'circle.home' }">Circle</b-nav-item>
+        <b-nav-item :to="{ name: 'widget' }">Widget</b-nav-item>
       </b-navbar-nav>
       <!-- right aligned -->
       <b-navbar-nav class="ml-auto">
@@ -26,8 +22,17 @@
             </b-input-group-append>
           </b-input-group>
           <div class="my-2">
-            <b-button size="sm" class="mr-sm-1" variant="outline-light">Sign in</b-button>
+<<<<<<< HEAD:frontend/src/components/NavBar.vue
+            <b-button v-if="loggedIn" size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
+            <b-button v-else size="sm" class="mr-sm-1" variant="outline-light" :to="{ name: 'login'}">Sign in</b-button>
             <b-button size="sm" variant="outline-light">Sign up</b-button>
+=======
+            <template v-if="!loggedIn">
+              <b-button size="sm" class="mr-sm-1" variant="outline-light" :to="{ name: 'login' }">Sign in</b-button>
+              <b-button size="sm" variant="outline-light" :to="{ name: 'join' }">Sign up</b-button>
+            </template>
+            <b-button v-else size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
+>>>>>>> a9b207d... Frontend prototype and routes:frontend/src/components/global/NavBar.vue
           </div>
         </b-nav-form>
       </b-navbar-nav>
@@ -36,10 +41,18 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
-  data () {
-    return {
-      // ...
+  computed: {
+    loggedIn() {
+      return this.$store.state.user.loggedIn
+    }
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch('user/logout')
+      this.$router.replace('/')
     }
   }
 }

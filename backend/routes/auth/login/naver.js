@@ -12,8 +12,8 @@ router.get('/', passport.authenticate('naver'))
 */
 router.get('/callback', 
   passport.authenticate('naver', {
-    failureRedirect: '/',
-    successRedirect: '/'
+    failureRedirect: '/auth/login/exit',
+    successRedirect: '/auth/login/exit'
   })
 )
 
