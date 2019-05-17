@@ -7,6 +7,7 @@ const { CustomError } = require('@src/error')
 /*
   GET api/comment
   query {
+    _basetime
     post
     group
     start
@@ -15,23 +16,68 @@ const { CustomError } = require('@src/error')
   return comments of a specific post
 */
 router.get('/', function(req, res, next) {
-  let { post, group, start, len } = req.query
+  let { _basetime, post, group, start, len } = req.query
   // preprocess
-  group = parseInt(group) || null
-  start = (start < 0) ? 0 : parseInt(start)
-  len   = parseInt(len) - 1 || 0
+  _basetime = new Date(_basetime)
+  group     = parseInt(group) || null
+  start     = (start < 0) ? 0 : parseInt(start)
+  len       = parseInt(len) - 1 || 0
   if      (len <  0) len = 0
   else if (len > 99) len = 99
   // main
   let db = new Database()
-  db.execute(`
-  SELECT id, content, date_created
-  FROM comment
-  WHERE postID = ? AND groupID <=> ?
-  LIMIT ?, ?`, 
-  [post, group, start, start + len])
+  db.execute(`SELECT COUNT(id) AS n FROM comment WHERE post_id = ?`, [post])
   .then(results => {
-    res.status(200).json(results)
+    if (results[0].n <= 30) {
+      // if comments of post is less than certain count, send all
+      return db.execute(`SELECT c.id,
+                         c.group_id,
+                         c.content,
+                         c.date_created,
+                         c.date_modified,
+                         u.id AS user_id,
+                         u.nickname,
+                         u.name AS username
+                         FROM comment c
+                         JOIN user    u ON c.user_id = u.id
+                         WHERE post_id = ?`,
+                         [post])
+    }
+    else {
+      // else send with soft-reload
+      return db.execute(`
+      SELECT tmp.id,
+             tmp.group_id,
+             tmp.content,
+             tmp.date_created,
+             tmp.date_modified,
+             tmp.user_id
+             tmp.nickname,
+             tmp.name AS username
+      FROM (
+        (SELECT c.*, u.id AS user_id, u.nickname. u.name
+        FROM comment c
+        JOIN user    u ON c.user_id = u.id
+        WHERE (c.post_id = ? AND c.group_id <=> ?) AND (c.date_created > ? OR c.date_modified > ?)
+        ORDER BY c.date_created DESC)
+
+        UNION
+
+        (SELECT c.*, u.id AS user_id, u.nickname, u.name
+        FROM comment c
+        JOIN user    u ON c.user_id = u.id
+        WHERE (c.post_id = ? AND c.group_id <=> ?) AND c.date_created <= ?
+        ORDER BY c.date_created DESC
+        LIMIT ?, ?)
+      ) tmp`, 
+      [post, group, _basetime, _basetime, post, group, _basetime, start, start + len])
+    }
+  })
+  .then(results => {
+    res.status(200).json({
+      _basetime: new Date(),
+      comments : results
+    })
   })
   .catch(err => {
     res.status(400).send({ message: 'Given request has error, maybe id of post or group is invalid' })
@@ -44,6 +90,7 @@ router.get('/', function(req, res, next) {
   body {
     post
     group
+    user
     content
   }
 */
@@ -51,13 +98,13 @@ router.post('/', ensureAuthForResource, function(req, res, next) {
   let { post, group, content } = req.body
   // preprocess
   post  = parseInt(post) || null
-  group = (group === 'null') ? null : parseInt(group)
+  group = parseInt(group) || null
   // main
   let db = new Database()
   db.execute(`
-  INSERT INTO comment(postID, userID, groupID, content)                   
+  INSERT INTO comment(post_id, group_id, user_id, content)                   
   VALUES(?, ?, ?, ?)`, 
-  [post, req.user.id, group, content])
+  [post, group, req.user.id, content])
   .then(results => {
     if (results.affectedRows === 1) {
       res.status(201).send({
@@ -94,7 +141,7 @@ router.delete('/:comment', ensureAuthForResource, function(req, res, next) {
   let db = new Database()
   db.execute(`
   DELETE FROM comment 
-  WHERE id = ? AND userID = ?`,
+  WHERE id = ? AND user_id = ?`,
   [comment, req.user.id])
   .then(results => {
     if (results.affectedRows === 1) {

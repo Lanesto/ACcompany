@@ -2,13 +2,15 @@ import axios from 'axios'
 
 const state = {
   // only fields aligned here will be used (redundant data will be received)
-  id      : null, // local login account or sns id (= sns_id   || account)
+  id      : null, // database raw column id
+  account : null, // local login account or sns id (= sns_id   || account)
   type    : null, // what kind of login type is    (= sns_type || 'local')
   nickname: null,
   email   : null,
   name    : null,
   gender  : null,
   age     : null,
+  // non-db state
   loggedIn: false
 }
 
@@ -17,33 +19,37 @@ const getters = {
 }
 
 const actions = {
-  login(context, credential) {
+  login(context, credentials) {
     // local login only!
     return new Promise(function(resolve, reject) {
-      axios.post('/auth/login/local', credential)
-      .then(results => {
+      axios.post('/auth/login/local', credentials)
+      .then(res => {
+        // when logged in successfully
         context.dispatch('load')
-        resolve(results)
+        resolve(res.data)
       })
-      .catch(err => {
-        reject(err)
-      })
+      .catch(err => reject(err))
     })
   },
   load(context) {
-    axios.get('/auth/profile')
-    .then(res => {
-      context.commit('set', res.data)
+    return new Promise(function(resolve, reject) {
+      axios.get('/auth/profile')
+      .then(res => {
+        context.commit('set', res.data)
+        resolve(res.data)
+      })
+      .catch(err => reject(err))
     })
-    .catch(err => {})
   },
   logout(context) {
-    axios.get('/auth/logout')
-    .then(results => {
-      context.commit('flush')
-      this.$router.replace({ name: 'home' })
+    return new Promise(function(resolve, reject) {
+      axios.get('/auth/logout')
+      .then(res => {
+        context.commit('flush')
+        resolve(res.data)
+      })
+      .catch(err => reject(err))
     })
-    .catch(err => {})
   }
 }
 

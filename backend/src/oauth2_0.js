@@ -5,14 +5,6 @@ const { Database } = require('@database')
 const { processPW } = require('@auth')
 const { CustomError } = require('@src/error')
 
-function serializer(user, done) {
-  done(null, user)
-}
-
-function deserializer(user, done) {
-  done(null, user)
-}
-
 function localLogin(info, done) {
   let { id, password } = info
   logger.info(`Local login request for ${id}`)
@@ -39,7 +31,7 @@ function localLogin(info, done) {
 }
 
 function SNSLogin(info, done) {
-  logger.info(`Incoming OAuth 2.0 Request (${info.authType})`)
+  logger.info(`Incoming OAuth 2.0 Request for ${info.authType} ${info.id}`)
   let db = new Database()
   db.execute(
   `SELECT COUNT(id) AS n FROM oauth2_0 WHERE sns_type = ? AND sns_id = ?`,
@@ -79,8 +71,13 @@ module.exports.isSupported = function(authType) {
 }
 
 module.exports.init = function() {
-  passport.serializeUser(serializer)
-  passport.deserializeUser(deserializer)
+  passport.serializeUser(function(user, done) {
+    done(null, user)
+  })
+  
+  passport.deserializeUser(function(user, done) {
+    done(null, user)
+  })
 
   // Local login
   passport.use('local', new (require('passport-local')).Strategy({

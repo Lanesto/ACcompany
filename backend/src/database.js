@@ -20,14 +20,18 @@ module.exports.Database = class {
         return reject(new CustomError('ConnectionNotExist', 'Database connection does not exist'))
       this.connection.query(query, params, (err, results, fields) => {
         if (err) {
-          logger.error(`MySQL ${err.code} ${err.errno} ${err.fatal ? 'NOT-FATAL' : 'FATAL'} (${err.sqlState})\r\n└ ${err.sqlMessage}\r\n└ SQL: ${err.sql}`)
+          logger.error(`MySQL ${err.code} ${err.errno} (${err.sqlState}) ${err.fatal ? 'NOT-FATAL' : 'FATAL'}\r\n└ PROBLEM: ${err.sqlMessage.replace(/\n/gi, '\r\n')}\r\n└ SQL: ${err.sql.replace(/\n/gi, '\r\n')}`)
           return reject(err)
         }
-        // make list of tables into single line string
-        let affectedTables = fields.length > 1 ? `${fields[0].db}.${fields[0].table}`
-                           : fields.map(field => `${field.db}.${field.table}`)
-                             .filter((field, index, array) => array.indexOf(field) === index)
-                             .join(', ')
+        let affectedTables
+        if (fields)
+          // make list of tables into single line string
+          affectedTables = fields.length > 1 ? `${fields[0].db}.${fields[0].table}`
+                            : fields.map(field => `${field.db}.${field.table}`)
+                              .filter((field, index, array) => array.indexOf(field) === index)
+                              .join(', ')
+        else
+          affectedTables = '-'
       if (results.affectedRows) {
           logger.info(`DB changed ${results.affectedRows} rows on ${affectedTables}`)
         } 

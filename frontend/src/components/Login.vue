@@ -26,6 +26,7 @@
           <b-button class="mt-4 w-50" type="submit" size="lg" variant="" @click.prevent="localLogin">Login</b-button><br><br>
         </div>
       </b-form>
+      <!-- .prevent is mandatory! else it will cause site refresh of href default event action -->
       <button class="sns naver" @click.prevent="naverLogin">Naver</button>
       <button class="sns kakao" @click.prevent="kakaoLogin">Kakao</button>
       <p>You are not member yet? join us <button style="display: inline-block;" @click="$router.push({ name: 'join' })">here</button></p>
@@ -47,15 +48,18 @@ export default {
         id: this.id,
         password: this.password
       })
-      .then(results => {
+      .then(res => {
         this.$router.replace({ name: 'home' })
       })
     },
-    popup(href) {
-      let popup = window.open(href, '', '', false)
-      let timeout = 10000
-      let tick = 100
-      let timer = setInterval(() => {
+    naverLogin() { return this._popup('/auth/login/naver') },
+    kakaoLogin() { return this._popup('/auth/login/kakao') },
+    _popup(href) {
+      // SNS login handler
+      let popup   = window.open(href, '', '', false)
+      let timeout = 10000 // maximum timeout 10s
+      let tick    = 100   // handler frequency
+      let timer   = setInterval(() => {
         // cross-origin window close event handler
         timeout -= tick
         if (popup.closed) {
@@ -65,9 +69,7 @@ export default {
         } 
         else if (timeout < 0) { clearInterval(timer) }
       }, tick)
-    },
-    naverLogin() { return this.popup('/auth/login/naver') },
-    kakaoLogin() { return this.popup('/auth/login/kakao') }
+    }
   }
 };
 </script>

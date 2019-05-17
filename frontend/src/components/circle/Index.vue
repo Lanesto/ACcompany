@@ -1,19 +1,29 @@
 <template>
   <div>
-    <h1>&lt;Circle/Index_Template&gt;</h1>
-    <button @click="$router.push({ name: 'circle.detail' })">Detail</button>
-    <button @click="$router.push({ name: 'circle.board', params: { id: counter } })">Board/Counter</button>
-    <button @click="counter += 1">Counter++</button>
+    <span style="margin-left: 12px;">
+      <img src="" width="48px" height="48px" />
+      <span style="margin-left: 4px; font-size: 30px; font-weight: 500;">{{ info.name }}</span>
+    </span>
+    <tab/>
+    <hr/>
     <router-view />
   </div>
 </template>
 
 <script>
+import Tab from './reusable/Tab.vue'
+
 export default {
-  data() {
-    return {
-      counter: 0
+  components: {
+    'tab': Tab
+  },
+  computed: {
+    info() {
+      return this.$store.state.circle
     }
+  },
+  created() {
+    this.$store.dispatch('circle/init', this.$route.params.circleID)
   }
 }
 </script>

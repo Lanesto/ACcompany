@@ -1,12 +1,14 @@
 import axios from 'axios'
 
 const state = {
-  id          : null,
-  logo        : null,
-  name        : null,
-  date_created: null,
-  count_member: null,
-  boards      : []
+  _basetime    : null,
+  id           : null,
+  title        : null,
+  content      : null,
+  date_created : null,
+  date_modified: null,
+  nickname     : null,
+  username     : null,
 }
 
 const getters = {
@@ -14,9 +16,9 @@ const getters = {
 }
 
 const actions = {
-  init(context, id) {
+  get(context, boardID) {
     return new Promise(function(resolve, reject) {
-      axios.get(`/api/circle/${id}`)
+      axios.get(`/api/post/${boardID}`)
       .then(res => {
         context.commit('set', res.data)
         resolve(res.data)
@@ -27,6 +29,7 @@ const actions = {
 }
 
 const mutations = {
+  init(state) {},
   set(state, data) { Object.zip(state, data) }
 }
 

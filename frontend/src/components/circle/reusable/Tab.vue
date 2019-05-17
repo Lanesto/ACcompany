@@ -1,12 +1,11 @@
 <template>
   <div class="pill-nav">
-    <router-link id="home" :to="{ name: 'company.home' }" exact>Home</router-link>
-    <router-link id="about" :to="{ name: 'company.about' }">About</router-link>
-    <router-link id="schedule" :to="{ name: 'company.schedule' }">Schedule</router-link>
+    <router-link id="home" :to="{ name: 'circle.home' }" exact>Home</router-link>
+    <router-link id="about" :to="{ name: 'circle.about' }">About</router-link>
     <div class="dropdown">
-      <span class="dropbtn" :class="{ active: $route.name === 'company.board' }">Board</span>
+      <span class="dropbtn" :class="{ active: $route.name === 'circle.board' }">Board</span>
       <div class="dropdown-content">
-        <router-link id="board" v-for="(board, index) in info.boards" :key="index" :to="{ name: 'company.board', params: { boardID: board.id } }">{{ board.name }}</router-link>
+        <router-link id="board" v-for="(board, index) in info.boards" :key="index" :to="{ name: 'circle.board', params: { boardID: board.id } }">{{ board.name }}</router-link>
       </div>
     </div>
   </div>
@@ -16,7 +15,7 @@
 export default {
   computed: {
     info() {
-      return this.$store.state.company
+      return this.$store.state.circle
     }
   }
 }

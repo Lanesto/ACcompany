@@ -20,9 +20,15 @@ router.get('/', function(req, res, next) {
   // main
   let db = new Database()
   db.execute(`
-  SELECT id, name, date_created
-  FROM circle
-  LIMIT ?, ?`, 
+  SELECT tmp.* 
+  FROM (
+    SELECT c.id, c.logo, c.name, c.is_exposed, c.is_open, COUNT(m.user_id) AS count_member
+    FROM circle c
+    LEFT JOIN membership m ON c.id = m.circle_id
+    WHERE c.is_exposed
+    GROUP BY c.id) tmp
+  GROUP BY tmp.id
+  LIMIT ?, ?`,
   [start, start + len])
   .then(results => {
     res.status(200).json(results)
@@ -48,17 +54,22 @@ router.get('/:circle/', function(req, res, next) {
   let db = new Database()
   let exBoards
   db.execute(`
-  SELECT b.id, b.name, b.date_created
-  FROM board  AS b
-  JOIN circle AS c ON b.groupID = c.id
-  WHERE c.id = ?`, 
+  SELECT b.id, b.name, b.date_created, b.date_modified
+  FROM board b
+  JOIN circle c ON b.group_id = c.id
+  WHERE c.id = ?`,
   [circle])
   .then(results => {
     exBoards = results
     return db.execute(`
-    SELECT id, name, date_created
-    FROM circle
-    WHERE id = ?`, 
+    SELECT tmp.* 
+    FROM (
+      SELECT c.id, c.logo, c.name, c.is_exposed, c.is_open, c.date_created, c.date_modified, COUNT(m.user_id) AS count_member
+      FROM circle c
+      LEFT JOIN membership m ON c.id = m.circle_id
+      GROUP BY c.id) tmp
+    WHERE tmp.id = ?
+    GROUP BY tmp.id`,
     [circle])
   }).then(results => {
     res.status(200).json({

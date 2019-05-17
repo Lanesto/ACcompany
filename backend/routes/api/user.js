@@ -15,7 +15,7 @@ router.get('/:user/', function(req, res, next) {
   db.execute(`
   SELECT u.account, u.email, u.name, u.gender, u.age, u.date_created, d.name dept
   FROM user AS u
-  LEFT JOIN department AS d ON u.deptID = d.id
+  LEFT JOIN department AS d ON u.dept_id = d.id
   WHERE u.account = ?`, 
   [user])
   .then(results => {

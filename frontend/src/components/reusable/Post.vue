@@ -1,0 +1,80 @@
+<template>
+  <div class="component">
+    <div class="header" @click="open = true">
+      <h3>{{ title }}</h3>
+      Created at: {{ date_created }}<br/>
+      Latest modification: {{ date_modified }}<br/>
+      By {{ nickname || username }}
+    </div>
+    <b-collapse :id="DOM" v-model="openPosts">
+      <br/>
+      <div class="body" @click="open = false">
+        {{ content }}
+      </div>
+    </b-collapse>
+    <b-collapse :id="`${DOM}-comments`" v-model="openComments">
+      <comment :parent="comments" />
+    </b-collapse>
+    <hr/>
+  </div>
+</template>
+
+<script>
+import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import Comment from './Comment.vue'
+
+export default {
+  components: {
+    'comment': Comment
+  },
+  data() {
+    return {
+      openPosts   : true,
+      openComments: true
+    }
+  },
+  computed: {
+    id()  { return this.$route.params.postID },
+    DOM() { return `post-${this.id}` },
+    ...mapState({
+      title        : state => state.post.title,
+      content      : state => state.post.content,
+      date_created : state => state.post.date_created,
+      date_modified: state => state.post.date_modified || 'None',
+      nickname     : state => state.post.nickname,
+      username     : state => state.post.username
+    }),
+    ...mapGetters({
+      comments: 'comment/treefiedComments'
+    })
+  },
+  methods: {
+    initialize(id) {
+      this.getDetail(id)
+      this.commentInit(id)
+    },
+    ...mapActions({
+      getDetail: 'post/get'
+    }),
+    ...mapMutations({
+      commentInit: 'comment/init'
+    })
+  },
+  watch: { 
+    // becuz route component is reused, lifecycle hook won't be called again; watcher needed
+    '$route': function(to, from) { 
+      if (to.name.endsWith('.post'))
+        this.initialize(to.params.postID)
+    }
+  },
+  created() { this.initialize(this.id) }
+}
+</script>
+
+<style scoped>
+
+.body {
+  min-height: 40vh;
+}
+
+</style>

@@ -9,7 +9,7 @@
       <b-navbar-nav>
         <b-nav-item :to="{ name: 'about' }">About</b-nav-item>
         <b-nav-item :to="{ name: 'company.home' }">Company</b-nav-item>
-        <b-nav-item :to="{ name: 'circle.home' }">Circle</b-nav-item>
+        <b-nav-item :to="{ name: 'circle.browse' }">Circle</b-nav-item>
         <b-nav-item :to="{ name: 'widget' }">Widget</b-nav-item>
       </b-navbar-nav>
       <!-- right aligned -->
@@ -52,7 +52,7 @@ export default {
   methods: {
     logout() {
       this.$store.dispatch('user/logout')
-      this.$router.replace('/')
+      .then(() => this.$router.replace('/'))
     }
   }
 }

@@ -1,27 +1,21 @@
 <template>
-  <div>
-    <h1>&lt;Company/Index_Template&gt;</h1>
-    <h3>Received Data:</h3>
-    <div v-for="(v, k) in info" :key="k" style="margin: 7px;">
-      <strong>{{ k }}</strong>:
-      <p style="margin: 0; overflow: auto;" >{{ v }}</p>
-    </div>
-    <h3>Tabs</h3>
-    <button @click="$router.push({ name: 'company.detail' })">Detail</button>
-    <button @click="$router.push({ name: 'company.organization' })">Organization</button>
-    <button @click="$router.push({ name: 'company.schedule' })">Schedule</button>
-    <button @click="$router.push({ name: 'company.board', params: { id: counter } })">Board/Counter</button>
-    <button @click="counter += 1">Counter++</button>
+  <div class="main">
+    <span style="margin-left: 12px;">
+      <img :src="info.logo" width="48px" height="48px" />
+      <span style="margin-left: 4px; font-size: 30px; font-weight: 500;">{{ info.name }}</span>
+    </span>
+    <tab/>
+    <hr/> 
     <router-view/>
   </div>
 </template>
 
 <script>
+import Tab from './reusable/Tab.vue'
+
 export default {
-  data() {
-    return {
-      counter: 0
-    }
+  components: {
+    'tab': Tab
   },
   computed: {
     info() {
@@ -29,6 +23,8 @@ export default {
     }
   },
   created() {
+    // FUTURE: lifecycle hook won't be called again when there's change in route params
+    //         so need to use watch hook
     this.$store.dispatch('company/init')
   }
 }

@@ -11,8 +11,8 @@ const { CustomError } = require('@src/error')
 router.get('/', ensureAuthForResource, function(req, res, next) {
   let db = new Database()
   db.execute(`
-  SELECT IFNULL(u.account, oa.sns_id) AS id, IFNULL(oa.sns_type, 'local') AS type, u.nickname, u.email, u.name, u.gender, u.age,
-         u.date_created, oa.sns_connectDate
+  SELECT u.id, IFNULL(u.account, oa.sns_id) AS account, IFNULL(oa.sns_type, 'local') AS type, u.nickname, u.email, u.name, u.gender, u.age,
+         u.date_created, oa.sns_date_connected
   FROM user u LEFT JOIN oauth2_0 oa ON u.ID = oa.ID
   WHERE u.id = ?`,
   [req.user.id])
