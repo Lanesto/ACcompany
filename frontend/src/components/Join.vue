@@ -1,155 +1,144 @@
 <template>
-  <div>
-    <br><br>
-    <b-container align="center">
-      <h1>ACCompany</h1>
-      <b-row align-v="center" align-h="center" class="mt-4">
-        <b-col md="7">
-          <b-form id = "signinform" autocomplete = "off" @keydown.enter = "sendPost">
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label = "아이디 :"
-              label-for = "s_id"
-              style="text-align:right">
-              <b-form-input id= "s_id"
-                        size = "lg"
-                        type = "text" 
-                        v-model = "id" 
-                        required = "required" 
-                        placeholder = "ID를 입력해주세요">
-              </b-form-input>
-            </b-form-group>
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label = "비밀번호 :"
-              label-for = "s_pw"
-              style="text-align:right">
-              <b-form-input id= "s_pw"
-                        size = "lg"
-                        type = "password" 
-                        v-model = "password" 
-                        required = "required" 
-                        placeholder = "비밀번호를 입력해주세요">
-              </b-form-input>
-              <!-- password verification needed -->
-            </b-form-group>
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label = "닉네임 :"
-              label-for = "s_nic"
-              style="text-align:right">
-              <b-form-input id= "s_nic"
-                        size = "lg"
-                        type = "text" 
-                        v-model = "nickname" 
-                        required = "required" 
-                        placeholder = "닉네임를 입력해주세요">
-              </b-form-input>
-            </b-form-group>
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label = "이메일 :"
-              label-for = "s_email"
-              style="text-align:right">
-              <b-form-input id= "s_email"
-                        size = "lg"
-                        type = "email" 
-                        v-model = "email" 
-                        required = "required" 
-                        placeholder = "이메일를 입력해주세요">
-              </b-form-input>
-            </b-form-group>
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label = "이름 :"
-              label-for = "username"
-              style="text-align:right">
-              <b-form-input id= "username"
-                        size = "lg"
-                        type = "text" 
-                        v-model = "username" 
-                        required = "required" 
-                        placeholder = "이름를 입력해주세요">
-              </b-form-input>
-            </b-form-group>
-            <b-form-group horizontal
-              :label-cols = "2"
-              label-size = "lg"
-              label-for = "sex"
-              style="text-align:right" 
-              label="성별 :" >
-              <b-form-radio-group v-model = "gender" size="lg" style="text-align:center" >
-                <b-form-radio name="male" value="M">남</b-form-radio>
-                <b-form-radio name="female" value="F">여</b-form-radio>
+  <b-container class="mt-2 p-5" fluid>
+    <b-row>
+      <b-col class="mb-4 mb-md-0" sm="12" md="6" lg="8">
+        <b-jumbotron
+          class="h-100"
+          header="Accompany"
+          lead="Improve your workplace with us"
+          bg-variant="light">
+          Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+        </b-jumbotron>
+      </b-col>
+      <b-col sm="12" md="6" lg="4">
+        <b-row class="mb-4" align-h="center">
+          <b-col>
+            <h2>Sign up</h2>
+          </b-col>
+          <b-col align="end">
+            <b-link :to="{ name: 'login' }">Back</b-link>
+          </b-col>
+        </b-row>
+        <b-row class="mb-2" align-h="center">
+          <b-col>
+            <b-form>
+              <b-form-input
+                class="mb-2 w-100"
+                type="text"
+                size="md"
+                required
+                placeholder="Account"
+                v-model="id" />
+              <b-form-input
+                class="mb-2 w-100"
+                size="md"
+                type="password"
+                required
+                placeholder="Password"
+                v-model="password" />
+              <b-form-input
+                class="mb-2 w-100"
+                size="md"
+                type="password"
+                required
+                placeholder="Repeat your password"
+                v-model="pwRepeat" />
+              <b-form-input
+                class="mb-2 w-100"
+                type="text"
+                size="md"
+                required
+                placeholder="Nickname"
+                v-model="nickname" />
+              <b-form-input
+                class="mb-2 w-100"
+                type="email"
+                size="md"
+                required
+                placeholder="Email"
+                v-model="email" />
+              <b-form-input
+                class="mb-2 w-100"
+                type="text"
+                size="md"
+                required
+                placeholder="Username"
+                v-model="username" />
+              <b-form-input
+                class="mb-2 w-100"
+                type="number"
+                size="md"
+                required
+                placeholder="Age"
+                v-model="age" />
+              <b-form-radio-group
+                class="ml-1 mb-3"
+                v-model="gender">
+                <b-form-radio value="M">
+                  Male
+                </b-form-radio>
+                <b-form-radio value="F">
+                  Female
+                </b-form-radio>
               </b-form-radio-group>
-            </b-form-group>
-            <b-form-group horizontal 
-              :label-cols = "2"
-              label-size = "lg"
-              label-for = "age"
-              style="text-align:right" 
-              label="나이 :" >
-              <b-form-select v-model = "age">
-                <option :value=null disabled>나이를 선택해주세요</option>
-                <option v-for="i in 99" :value="i" :key="i" >{{i}}</option>
-              </b-form-select>
-            </b-form-group>
-
-            <b-button id = "signupb" class="w-75" type="submit" size="lg" variant="secondary" @click.prevent="join">가입하기</b-button>
-            <b-button size="lg" :to="{ name: 'login' }">Login</b-button>
-          </b-form>
-        </b-col>
-      </b-row>
-    </b-container>
-  </div>
+              <b-button
+                class="p-2"
+                type="submit"
+                size="md"
+                block
+                variant="success"
+                @click.prevent="join">
+                Create an account
+              </b-button>
+            </b-form>
+          </b-col>
+        </b-row>
+      </b-col>
+    </b-row>
+    <b-row class="mt-3">
+      <b-col>
+        <b-progress :max="7" animated>
+          <b-progress-bar :value="5" variant="primary"/>
+          <b-progress-bar :value="2" variant="danger"/>
+        </b-progress>
+      </b-col>
+    </b-row>
+  </b-container>
 </template>
 
 <script>
-  export default {
+// TODO: Form validation and progress bar binding
+
+export default {
   data () {
     return {
-      id: null,
+      id      : null,
       password: null,
+      pwRepeat: null,
       nickname: null,
-      email: null,
+      email   : null,
       username: null,
-      gender: null,
-      age: null
+      gender  : null,
+      age     : null
     }
   },
   methods: {
     join() {
+      // if validated then
       this.$axios.post('/auth/register', {
-        id: this.id,
+        id      : this.id,
         password: this.password,
         nickname: this.nickname,
-        email: this.email,
+        email   : this.email,
         username: this.username,
-        gender: this.gender,
-        age: this.age
+        gender  : this.gender,
+        age     : this.age
       })
-      .then(response => {
-        alert(response.data.message)
+      .then(res => {
         this.$router.replace({ name: 'join' })
       })
-      .catch(err => {
-
-      })
+      .catch(err => { })
     }
   }
 }
-<<<<<<< HEAD:frontend/src/components/login/Signup.vue
 </script>
-=======
-</script>
-
-<style scoped>
-
-</style>
-
->>>>>>> a9b207d... Frontend prototype and routes:frontend/src/components/Join.vue

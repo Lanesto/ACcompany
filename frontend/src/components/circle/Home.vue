@@ -8,24 +8,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      detail : null,
-      posts  : null
-    }
-  },
-  methods: {
-    getCircleDetail(circleID) {
-      this.$axios.get(`/api/circle/${circleID}`)
-      .then(results => {
-        this.detail = results.data
-      })
-      .catch(err => {})
-    }
-  }
+  
 }
 </script>
-
-<style scoped>
-
-</style>

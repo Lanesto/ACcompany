@@ -8,26 +8,6 @@
 
 <script>
 export default {
-  data() {
-    return {
-      info: {
-        // vuex company
-      },
-      posts: []
-    }
-  },
-  methods: {
-    bringPosts(boardID) {
-      this.$axios.get(`/api/board/${boardID}`, { params: { start: 0, len: 100 } })
-      .then(results => {
-        this.posts = results.data
-      })
-      .catch(err => {})
-    }
-  }
+
 }
 </script>
-
-<style scoped>
-
-</style>

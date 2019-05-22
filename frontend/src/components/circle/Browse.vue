@@ -5,9 +5,8 @@
     <div class="area" v-for="(circle, index) in circles" :key="index" @click="$router.push({ name: 'circle.home', params: { circleID: circle.id } })" style="padding: 20px; margin-bottom: 5px; border: 1px dotted gray;">
       <p>id: {{ circle.id }}</p>
       <p>name: {{ circle.name }}</p>
-      <p>date_created: {{ new Date(circle.date_created).toDateString() }}</p>
+      <p>date_created: {{ circle.date_created }}</p>
     </div>
-    <router-view />
   </div>
 </template>
 
@@ -15,24 +14,36 @@
 export default {
   data() {
     return {
+      start  : 0,
+      len    : 100,
       circles: []
     }
   },
   methods: {
-    getCircles() {
-      this.$axios.get('/api/circle', { params: { start: 0, len: 100 } })
+    get() {
+      this.$axios.get('/api/circle', { 
+        params: { 
+          start: this.start,
+          len  : this.len
+        }
+      })
       .then(results => {
-        this.circles = this.circles.concat(results.data)
+        let circles = results.data
+        if (circles.length < this.len) {
+          // length should be at least 1
+          this.len = circles.length | 1
+        }
+        this.start += this.len
+        circles.forEach(received => {
+          let index = this.circles.findIndex(original => original.id === received.id)
+          if (index === (-1)) 
+            // dupliacted posts are discarded
+            this.circles.push(received)
+        })
       })
       .catch(err => {})
     }
   },
-  created() {
-    this.getCircles()
-  }
+  created() { this.get() }
 }
 </script>
-
-<style scoped>
-
-</style>

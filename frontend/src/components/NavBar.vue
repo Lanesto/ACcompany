@@ -1,5 +1,5 @@
 <template>
-  <b-navbar id="navbar" toggleable="lg" type="dark" variant="dark" sticky>
+  <b-navbar id="navbar" toggleable="md" type="dark" variant="dark" sticky>
     <!-- left aligned -->
     <b-navbar-brand id="navbar-brand" :to="{ name: 'home' }" class="ml-3">
       <h3>ACC</h3>
@@ -22,17 +22,11 @@
             </b-input-group-append>
           </b-input-group>
           <div class="my-2">
-<<<<<<< HEAD:frontend/src/components/NavBar.vue
-            <b-button v-if="loggedIn" size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
-            <b-button v-else size="sm" class="mr-sm-1" variant="outline-light" :to="{ name: 'login'}">Sign in</b-button>
-            <b-button size="sm" variant="outline-light">Sign up</b-button>
-=======
             <template v-if="!loggedIn">
               <b-button size="sm" class="mr-sm-1" variant="outline-light" :to="{ name: 'login' }">Sign in</b-button>
               <b-button size="sm" variant="outline-light" :to="{ name: 'join' }">Sign up</b-button>
             </template>
             <b-button v-else size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
->>>>>>> a9b207d... Frontend prototype and routes:frontend/src/components/global/NavBar.vue
           </div>
         </b-nav-form>
       </b-navbar-nav>

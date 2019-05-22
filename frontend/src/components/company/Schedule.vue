@@ -11,7 +11,3 @@ export default {
   // TODO: calendar
 }
 </script>
-
-<style scoped>
-
-</style>

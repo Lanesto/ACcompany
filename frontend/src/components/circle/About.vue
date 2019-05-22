@@ -10,15 +10,13 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 export default {
   computed: {
-    info() {
-      return this.$store.state.circle
-    }
+    ...mapState({
+      info: state => state.circle
+    })
   }
 }
 </script>
-
-<style scoped>
-
-</style>

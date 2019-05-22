@@ -22,24 +22,12 @@ export default new Router({
       component: Home,
     },
     {
-<<<<<<< HEAD
-<<<<<<< HEAD
-      path: '/login',
-=======
-      path: 'about/',
-=======
       path: '/about',
->>>>>>> 5bf0f48... Backend logging fix / Frontend vuex works
       name: 'about',
       component: About
     },
     {
-<<<<<<< HEAD
-      path: 'login/', 
->>>>>>> a9b207d... Frontend prototype and routes
-=======
       path: '/login', 
->>>>>>> 5bf0f48... Backend logging fix / Frontend vuex works
       name: 'login',
       component: Login
     },
