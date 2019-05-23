@@ -26,53 +26,35 @@ router.get('/', function(req, res, next) {
   else if (len > 99) len = 99
   // main
   let db = new Database()
-  db.execute(`SELECT COUNT(id) AS n FROM comment WHERE post_id = ?`, [post])
-  .then(results => {
-    if (results[0].n <= 30) {
-      // if comments of post is less than certain count, send all
-      return db.execute(`SELECT c.id,
-                         c.group_id,
-                         c.content,
-                         c.date_created,
-                         c.date_modified,
-                         u.id AS user_id,
-                         u.nickname,
-                         u.name AS username
-                         FROM comment c
-                         JOIN user    u ON c.user_id = u.id
-                         WHERE post_id = ?`,
-                         [post])
-    }
-    else {
-      // else send with soft-reload
-      return db.execute(`
-      SELECT tmp.id,
-             tmp.group_id,
-             tmp.content,
-             tmp.date_created,
-             tmp.date_modified,
-             tmp.user_id
-             tmp.nickname,
-             tmp.name AS username
-      FROM (
-        (SELECT c.*, u.id AS user_id, u.nickname. u.name
-        FROM comment c
-        JOIN user    u ON c.user_id = u.id
-        WHERE (c.post_id = ? AND c.group_id <=> ?) AND (c.date_created > ? OR c.date_modified > ?)
-        ORDER BY c.date_created DESC)
+  db.execute(`
+  SELECT tmp.id,
+         tmp.group_id,
+         tmp.content,
+         COUNT(c2.id) AS count_subcomments,
+         tmp.date_created,
+         tmp.date_modified,
+         tmp._user_id AS user_id,
+         tmp.nickname,
+         tmp.name AS username
+  FROM (
+    (SELECT c.*, u.id AS _user_id, u.nickname, u.name
+    FROM comment c
+    JOIN user    u ON c.user_id = u.id
+    WHERE (c.post_id = ? AND c.group_id <=> ?) AND (c.date_created > ? OR c.date_modified > ?)
+    ORDER BY c.date_created DESC)
 
-        UNION
+  UNION
 
-        (SELECT c.*, u.id AS user_id, u.nickname, u.name
-        FROM comment c
-        JOIN user    u ON c.user_id = u.id
-        WHERE (c.post_id = ? AND c.group_id <=> ?) AND c.date_created <= ?
-        ORDER BY c.date_created DESC
-        LIMIT ?, ?)
-      ) tmp`, 
-      [post, group, _basetime, _basetime, post, group, _basetime, start, start + len])
-    }
-  })
+  (SELECT c.*, u.id AS _user_id, u.nickname, u.name
+    FROM comment c
+    JOIN user    u ON c.user_id = u.id
+    WHERE (c.post_id = ? AND c.group_id <=> ?) AND c.date_created <= ?
+    ORDER BY c.date_created DESC
+    LIMIT ?, ?)
+  ) tmp
+  LEFT JOIN comment c2 ON tmp.id = c2.group_id
+  GROUP BY tmp.id`,
+  [post, group, _basetime, _basetime, post, group, _basetime, start, start + len])
   .then(results => {
     res.status(200).json({
       _basetime: new Date(),

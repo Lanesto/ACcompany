@@ -6,7 +6,6 @@ import company from './modules/company'
 import circle  from './modules/circle'
 import board   from './modules/board'
 import post    from './modules/post'
-import comment from './modules/comment'
 
 Vue.use(Vuex)
 
@@ -18,8 +17,7 @@ const store = new Vuex.Store({
     company,
     circle,
     board,
-    post,
-    comment
+    post
   }
 })
 

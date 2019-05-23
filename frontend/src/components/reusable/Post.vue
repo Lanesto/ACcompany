@@ -13,14 +13,14 @@
       </div>
     </b-collapse>
     <b-collapse :id="`${DOM}-comments`" v-model="openComments">
-      <comment :parent="comments" />
+      <comment :post="this.id" :group="null" />
     </b-collapse>
     <hr/>
   </div>
 </template>
 
 <script>
-import { mapState, mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import Comment from './Comment.vue'
 
 export default {
@@ -43,21 +43,14 @@ export default {
       date_modified: state => state.post.date_modified || 'None',
       nickname     : state => state.post.nickname,
       username     : state => state.post.username
-    }),
-    ...mapGetters({
-      comments: 'comment/treefiedComments'
     })
   },
   methods: {
     initialize(id) {
       this.getDetail(id)
-      this.commentInit(id)
     },
     ...mapActions({
       getDetail: 'post/get'
-    }),
-    ...mapMutations({
-      commentInit: 'comment/init'
     })
   },
   watch: { 
@@ -65,7 +58,7 @@ export default {
     '$route': function(to, from) { 
       if (to.name.endsWith('.post'))
         this.initialize(to.params.postID)
-    }
+    },
   },
   created() { this.initialize(this.id) }
 }

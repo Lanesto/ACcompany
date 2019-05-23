@@ -13,6 +13,12 @@
       About
     </b-nav-item>
     <b-nav-item-dropdown text="Board" right>
+      <template v-if="info.boards.length === 0">
+        <b-dropdown-item
+          disabled>
+          No boards yet
+        </b-dropdown-item>
+      </template>
       <b-dropdown-item 
         class="mb-1"
         exact-active-class="active"

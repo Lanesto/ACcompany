@@ -1,12 +1,22 @@
 <template>
   <div>
-    <h1>&lt;Circle/Browse_Template&gt;</h1>
-    <h2>Circle list</h2>
-    <div class="area" v-for="(circle, index) in circles" :key="index" @click="$router.push({ name: 'circle.home', params: { circleID: circle.id } })" style="padding: 20px; margin-bottom: 5px; border: 1px dotted gray;">
-      <p>id: {{ circle.id }}</p>
-      <p>name: {{ circle.name }}</p>
-      <p>date_created: {{ circle.date_created }}</p>
-    </div>
+    <h1>Circles</h1>
+    <b-card-group columns>
+      <b-card
+        class="mb-3"
+        :title="circle.name"
+        v-for="(circle, index) in circles"
+        :key="index">
+        <b-card-text>
+          {{ circle.count_member }} Members
+          {{ circle.date_created }}
+        </b-card-text>
+        <b-button
+          class="mb-3 float-right"
+          variant="primary"
+          :to="{ name: 'circle.home', params: { circleID: circle.id } }">Join</b-button>
+      </b-card>
+    </b-card-group>
   </div>
 </template>
 

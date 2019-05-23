@@ -19,6 +19,14 @@
             <b-link :to="{ name: 'login' }">Back</b-link>
           </b-col>
         </b-row>
+        <b-row class="mb-3">
+          <b-col>
+            <b-progress :max="7" animated>
+              <b-progress-bar :value="5" variant="primary"/>
+              <b-progress-bar :value="2" variant="danger"/>
+            </b-progress>
+          </b-col>
+        </b-row>
         <b-row class="mb-2" align-h="center">
           <b-col>
             <b-form>
@@ -93,14 +101,6 @@
             </b-form>
           </b-col>
         </b-row>
-      </b-col>
-    </b-row>
-    <b-row class="mt-3">
-      <b-col>
-        <b-progress :max="7" animated>
-          <b-progress-bar :value="5" variant="primary"/>
-          <b-progress-bar :value="2" variant="danger"/>
-        </b-progress>
       </b-col>
     </b-row>
   </b-container>
