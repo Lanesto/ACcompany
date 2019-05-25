@@ -3,6 +3,16 @@
     <span style="margin-left: 12px;">
       <img :src="info.logo" width="48px" height="48px" />
       <span style="margin-left: 4px; font-size: 30px; font-weight: 500;">{{ info.name }}</span>
+      <b-button
+        v-if="info.is_member"
+        class="mx-3"
+        variant="outline-warning"
+        @click="leave">Leave</b-button>
+      <b-button
+        v-else
+        class="mx-3"
+        variant="outline-success"
+        @click="join">Join</b-button>
     </span>
     <tab />
     <hr />
@@ -24,8 +34,20 @@ export default {
     })
   },
   methods: {
+    join() {
+      this.$store.dispatch('circle/join')
+      .catch(err => {
+        alert(err.response.data.message)
+      })
+    },
+    leave() {
+      this.$store.dispatch('circle/leave')
+      .catch(err => {
+        alert(err.response.data.message)
+      })
+    },
     ...mapActions({
-      init: 'circle/init'
+      init : 'circle/init'
     })
   },
   /*

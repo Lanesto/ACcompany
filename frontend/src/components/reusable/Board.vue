@@ -4,11 +4,37 @@
       <router-view />
     </div>
     <div>
+      <b-button class="float-right" variant="primary" v-b-modal.boardModal>New post</b-button>
       <h2>{{ boardName }}</h2>
-      <div v-for="(post, index) in posts" :key="index">
-        <router-link :to="{ name: `${type}.post`, params: { postID: post.id } }">{{ post.title }}</router-link>
+      <div
+        style="border-bottom: 1px solid black;"
+        class="mb-2" 
+        v-for="(post, index) in posts" :key="index">
+        <span class="mr-2">{{ index.toString().padStart(3, '0') }}</span>
+        <router-link 
+          class="mb-1"
+          :to="{ name: `${type}.post`, params: { postID: post.id } }">
+          {{ post.title }}
+        </router-link>
+        <br/>
+        <p class="mb-0">{{ post.nickname || post.username }}</p>
+        <p class="mb-0">{{ post.date_created }}</p>
       </div>
     </div>
+    <b-modal
+      id="boardModal"
+      size="lg"
+      title="Create new post"
+      @show="resetModal"
+      @hidden="resetModal"
+      @ok="handleOK">
+      <div class="mb-1">Title</div>
+      <b-form-input type="text" v-model="title"/>
+      <div class="mt-3 mb-1">Content</div>
+      <b-form-textarea
+        rows="8"
+        v-model="content" />
+    </b-modal>
   </div>
 </template>
 
@@ -16,6 +42,13 @@
 import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
 
 export default {
+  data() {
+    return {
+      // create new post
+      title  : '',
+      content: ''
+    }
+  },
   computed: {
     type() { 
       return (this.$route.name.startsWith('company.board')) ? 'company.board'  
@@ -45,6 +78,23 @@ export default {
     initialize(id) { 
       this.init(id)
       this.request()
+    },
+    resetModal() {
+      this.title   = ''
+      this.content = ''
+    },
+    handleOK() {
+      this.$axios.post('/api/post', {
+        board  : this.id,
+        title  : this.title,
+        content: this.content
+      })
+      .then(res => {
+        this.request()
+      })
+      .catch(err => {
+        alert(err.response.data.message)
+      })
     },
     ...mapMutations({
       init: 'board/init'

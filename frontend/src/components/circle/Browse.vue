@@ -14,7 +14,7 @@
         <b-button
           class="mb-3 float-right"
           variant="primary"
-          :to="{ name: 'circle.home', params: { circleID: circle.id } }">Join</b-button>
+          :to="{ name: 'circle.home', params: { circleID: circle.id } }">GO</b-button>
       </b-card>
     </b-card-group>
   </div>

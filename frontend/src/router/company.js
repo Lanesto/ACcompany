@@ -1,3 +1,5 @@
+import store from '../store/index'
+
 import Index    from '@/components/company/Index.vue'
 import Home     from '@/components/company/Home.vue'
 import About    from '@/components/company/About.vue'
@@ -29,11 +31,23 @@ export default [
         path: 'board/:boardID',
         name: 'company.board',
         component: Board,
+        beforeEnter: function(to, from, next) {
+          if (store.state.company.boards.findIndex(e => e.id == to.params.boardID) > (-1))
+            next()
+          else
+            next({ name: 'home' })
+        },
         children: [
           {
             path: 'post/:postID',
             name: 'company.board.post',
-            component: Post
+            component: Post,
+            beforeEnter: function(to, from, next) {
+              if (store.state.board.posts.findIndex(e => e.id == to.params.postID) > (-1))
+                next()
+              else
+                next({ name: 'home' })
+            }
           }
         ]
       },

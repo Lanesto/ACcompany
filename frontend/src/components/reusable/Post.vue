@@ -1,6 +1,12 @@
 <template>
   <div class="component">
     <div class="header" @click="open = true">
+      <b-button
+        class="float-right"
+        variant="danger"
+        @click="destroy">
+        Delete
+      </b-button>
       <h3>{{ title }}</h3>
       Created at: {{ date_created }}<br/>
       Latest modification: {{ date_modified }}<br/>
@@ -48,6 +54,15 @@ export default {
   methods: {
     initialize(id) {
       this.getDetail(id)
+    },
+    destroy() {
+      this.$axios.delete(`/api/post/${this.id}`)
+      .then(res => {
+        this.$router.push({ name: this.$route.name.replace('.post', '') })
+      })
+      .catch(err => {
+        alert(err.response.data.message)
+      })
     },
     ...mapActions({
       getDetail: 'post/get'
