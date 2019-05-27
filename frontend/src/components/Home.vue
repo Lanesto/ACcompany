@@ -1,5 +1,6 @@
 <template>
-  <b-container fluid>
+  <b-container fluid style="background: #f8f9fa; min-height: 105vh !important;">
+    <div class="container">
     <b-row class="mb-4">
       <b-col class="mr-2 mb-2 mb-lg-0 mr-lg-0" col sm="12" lg="6">
         <b-jumbotron
@@ -45,6 +46,7 @@
         <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
       </b-col>
     </b-row>
+    </div>
   </b-container>
 </template>
 
@@ -53,3 +55,19 @@ export default {
 
 }
 </script>
+
+<style>
+.container {
+    max-width: calc(1600px + 10%);
+    margin: 0 auto;
+    padding-left: 5%;
+    padding-right: 5%;
+}
+
+@media only screen and (max-width: 1083px) {
+  .container {
+      padding-left: 0;
+      padding-right: 0;
+  }
+}
+</style>

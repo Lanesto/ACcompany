@@ -27,11 +27,13 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   padding: 0px;
   margin: 0px;
+  background: #f2f2f2;
+  min-height: 105vh !important;
 }
 
 #content {
   width: 100%;
-  padding: 20px;
+  /* padding: 20px; */
   min-height: 80vh;
   transition: all 0.3s;
 }
