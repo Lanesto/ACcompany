@@ -26,6 +26,7 @@
     "passport-kakao": "0.0.5",
     "passport-local": "^1.0.0",
     "passport-naver": "^1.0.6",
+    "validator": "^11.0.0",
     "winston": "^3.2.1"
   },
   "_moduleAliases": {

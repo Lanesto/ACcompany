@@ -19,26 +19,43 @@
         <b-row class="mb-2" align-h="center">
           <b-col>
             <b-form>
-              <b-form-input
-                class="mb-3 w-100"
-                type="text"
-                size="lg"
-                required
-                placeholder="Account"
-                v-model="id" />
-              <b-form-input
-                class="mb-3 w-100"
-                size="lg"
-                type="password"
-                required
-                placeholder="Password"
-                v-model="password" />
+              <b-form-group>
+                <b-form-input
+                  class="w-100"
+                  name="form.id"
+                  type="text"
+                  size="lg"
+                  required
+                  placeholder="Account"
+                  v-model="form.id" 
+                  v-validate.immediate="'required|length:6,45'"
+                  :state="validate('form.id')" />
+                  <b-form-invalid-feedback>
+                    Account must be at least 6 and maximum 45 characters.
+                  </b-form-invalid-feedback>
+              </b-form-group>
+              <b-form-group>
+                <b-form-input
+                  class="w-100"
+                  name="form.password"
+                  size="lg"
+                  type="password"
+                  required
+                  placeholder="Password"
+                  v-model="form.password"
+                  v-validate.immediate="'required|length:6,100'"
+                  :state="validate('form.password')" />
+                  <b-form-invalid-feedback>
+                    Password is a string length between 6 and 100.
+                  </b-form-invalid-feedback>
+              </b-form-group>
               <b-button
                 class="p-2"
                 type="submit"
                 size="lg"
                 block
                 variant="dark"
+                :disabled="veeErrors.any()"
                 @click.prevent="localLogin">
                 Login
               </b-button>
@@ -87,18 +104,29 @@ import { mapActions} from 'vuex'
 export default {
   data() {
     return {
-      id      : null,
-      password: null
+      form: {
+        id      : null,
+        password: null
+      }
     }
   },
   methods: {
+    validate(ref) {
+      if (this.veeFields[ref] && (this.veeFields[ref].dirty || this.veeFields[ref].validated)) {
+        return !this.veeErrors.has(ref)
+      }
+      return null
+    },
     localLogin() {
       this.login({ 
-        id: this.id,
-        password: this.password
+        id: this.form.id,
+        password: this.form.password
       })
       .then(data => {
         this.$router.replace({ name: 'home' })
+      })
+      .catch(err => {
+        alert('Login failed')
       })
     },
     naverLogin() { return this._popup('/auth/login/naver') },

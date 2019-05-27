@@ -10,6 +10,8 @@ import router from './router'
 import BootstrapVue from 'bootstrap-vue'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
+// VeeValidate
+import VeeValidate from 'vee-validate'
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +33,11 @@ Object.nullify = function(left) {
 Vue.prototype.$axios = axios
 
 Vue.use(BootstrapVue)
+Vue.use(VeeValidate, {
+  inject       : true,
+  fieldsBagName: 'veeFields',
+  errorBagName : 'veeErrors'
+})
 Vue.component('fa-icon', FontAwesomeIcon)
 
 Vue.config.productionTip = false

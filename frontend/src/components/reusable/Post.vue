@@ -1,24 +1,22 @@
 <template>
-  <div class="component">
-    <div class="header" @click="open = true">
+  <div>
+    <div class="mb-2">
       <b-button
         class="float-right"
         variant="danger"
         @click="destroy">
         Delete
       </b-button>
-      <h3>{{ title }}</h3>
+      <h3 @click="$root.$emit('bv::toggle::collapse', DOM)">{{ title }}</h3>
       Created at: {{ date_created }}<br/>
       Latest modification: {{ date_modified }}<br/>
       By {{ nickname || username }}
     </div>
     <b-collapse :id="DOM" v-model="openPosts">
       <br/>
-      <div class="body" @click="open = false">
+      <div style="min-height: 40vh;">
         {{ content }}
       </div>
-    </b-collapse>
-    <b-collapse :id="`${DOM}-comments`" v-model="openComments">
       <comment :post="this.id" :group="null" />
     </b-collapse>
     <hr/>
@@ -78,11 +76,3 @@ export default {
   created() { this.initialize(this.id) }
 }
 </script>
-
-<style scoped>
-
-.body {
-  min-height: 40vh;
-}
-
-</style>

@@ -1,6 +1,7 @@
-const express = require('express')
-const router  = express.Router()
-const auth    = require('@auth')
+const express   = require('express')
+const router    = express.Router()
+const validator = require('validator')
+const auth      = require('@auth')
 const { Database } = require('@database')
 const { CustomError } = require('@src/error')
 
@@ -19,6 +20,14 @@ const { CustomError } = require('@src/error')
 */
 router.post('/', function(req, res, next) {
   let { id, password, nickname, email, username, gender, age } = req.body
+  // validate
+  if ( !((validator.isAlphanumeric(id) && validator.isLength(id, { min: 6, max: 45 }))
+    && validator.isLength(password, { min: 6, max: 100 })
+    && (validator.isAlphanumeric(nickname) && validator.isLength(nickname, { min: 2, max: 45 }))
+    && validator.isEmail(email)
+    && (validator.isAlphanumeric(username) && validator.isLength(username, { min: 1, max: 16 }))
+    && validator.isInt(age, { min: 0, max: 200 })) )
+    return res.status(400).send({ message: 'Form validation has failed.' })
   // preprocess
   gender = (gender === 'M') ? 1
          : (gender === 'F') ? 0 : null
