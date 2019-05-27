@@ -1,10 +1,12 @@
 import Vue    from 'vue'
 import Router from 'vue-router'
+import store  from '../store/index'
 // root routes
 import Home     from '@/components/Home.vue'
+import About    from '@/components/About.vue'
 import Login    from '@/components/Login.vue'
 import Join     from '@/components/Join.vue'
-import About    from '@/components/About.vue'
+import User     from '@/components/User.vue'
 import NotFound from '@/components/NotFound.vue'
 // route module
 import CompanyRouter from './company'
@@ -35,6 +37,16 @@ export default new Router({
       path: '/join', 
       name: 'join',
       component: Join
+    },
+    {
+      path: '/user',
+      name: 'user',
+      component: User,
+      beforeEnter(to, from, next) {
+        if (!store.state.user.loggedIn)
+          return next({ name: 'home' })
+        next()
+      }
     },
     ...CompanyRouter,
     ...CircleRouter,

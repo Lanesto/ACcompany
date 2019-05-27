@@ -239,16 +239,16 @@ export default {
     join() {
       // if validated then
       this.$axios.post('/auth/register', {
-        id      : this.id,
-        password: this.password,
-        nickname: this.nickname,
-        email   : this.email,
-        username: this.username,
-        gender  : this.gender,
-        age     : this.age
+        id      : this.form.id,
+        password: this.form.password,
+        nickname: this.form.nickname,
+        email   : this.form.email,
+        username: this.form.username,
+        gender  : this.form.gender,
+        age     : this.form.age
       })
       .then(res => {
-        this.$router.replace({ name: 'join' })
+        this.$router.replace({ name: 'login' })
       })
       .catch(err => { 
         alert('Failed to create a new account\r\n' + err.response.data.message || err)

@@ -18,7 +18,7 @@
           <b-input-group class="mr-sm-2" size="sm">
             <b-form-input placeholder="Search"></b-form-input>
             <b-input-group-append>
-              <b-button variant="primary" size="sm"><fa-icon style="position: relative; top: 2px;" icon="search" /></b-button>
+              <b-button variant="primary" size="sm"><fa-icon style="position: relative; top: 1px;" icon="search" /></b-button>
             </b-input-group-append>
           </b-input-group>
           <div class="my-2">
@@ -26,7 +26,12 @@
               <b-button size="sm" class="mr-sm-1" variant="outline-light" :to="{ name: 'login' }">Sign in</b-button>
               <b-button size="sm" variant="outline-light" :to="{ name: 'join' }">Sign up</b-button>
             </template>
-            <b-button v-else size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
+            <template v-else>
+              <b-button size="sm" class="mr-sm-1" variant="outline-light" @click="logout">Sign out</b-button>
+              <span id="user-icon" @click="$router.push({ name: 'user' })">
+                <fa-icon icon="user" class="ml-1" style="position: relative; top: 2px; color: white;" />
+              </span>
+            </template>
           </div>
         </b-nav-form>
       </b-navbar-nav>
@@ -61,5 +66,9 @@ export default {
     position: relative;
     margin-right: 5px;
     top: 3px;
+  }
+
+  #user-icon:hover {
+    cursor: pointer;
   }
 </style>

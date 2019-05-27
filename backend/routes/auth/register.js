@@ -26,6 +26,7 @@ router.post('/', function(req, res, next) {
     && (validator.isAlphanumeric(nickname) && validator.isLength(nickname, { min: 2, max: 45 }))
     && validator.isEmail(email)
     && (validator.isAlphanumeric(username) && validator.isLength(username, { min: 1, max: 16 }))
+    && validator.isIn(gender, ['M', 'F'])
     && validator.isInt(age, { min: 0, max: 200 })) )
     return res.status(400).send({ message: 'Form validation has failed.' })
   // preprocess
@@ -67,6 +68,7 @@ router.post('/', function(req, res, next) {
       res.status(500).send({ message: 'Registration failed, server or database error' })
     }
     else {
+      console.log(err)
       res.status(400).send({ message: 'Request or internal server error' })
     }
   })

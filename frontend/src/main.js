@@ -14,9 +14,9 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import VeeValidate from 'vee-validate'
 // Font Awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faSearch } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faUser } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-library.add(faSearch)
+library.add(faSearch, faUser)
 
 Object.zip = function(left, right, mode='force') {
   // set left[key] = right[key] where key is in left
