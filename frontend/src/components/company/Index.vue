@@ -12,7 +12,7 @@
           </div>
       </div>
   </div>
-    <div class="main container" style="position: relative; top: 4vh;">
+    <div class="main container" style="margin-top: 3rem !important;">
     <span style="margin-left: 12px;">
       <img :src="info.logo" width="48px" height="48px" />
       <span style="margin-left: 4px; font-size: 30px; font-weight: 500;">{{ info.name }}</span>
