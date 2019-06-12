@@ -12,8 +12,7 @@
             </div>
         </div>
     </div>
-    <h1>Circles</h1>
-    <b-card-group columns>
+    <b-card-group columns style="padding: 10px;">
       <b-card
         class="mb-3"
         :title="circle.name"

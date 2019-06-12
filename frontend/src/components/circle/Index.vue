@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="padding: 10px;">
     <span style="margin-left: 12px;">
       <img :src="info.logo" width="48px" height="48px" />
       <span style="margin-left: 4px; font-size: 30px; font-weight: 500;">{{ info.name }}</span>
